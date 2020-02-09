@@ -143,4 +143,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
+# Custom
+build/**
+*/build/**
+
 # End of https://www.gitignore.io/api/java,macos,intellij
