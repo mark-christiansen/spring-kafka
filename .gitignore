@@ -143,8 +143,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Custom
+# Custom Entries
 build/**
 */build/**
-
+.gradle/**
 # End of https://www.gitignore.io/api/java,macos,intellij
