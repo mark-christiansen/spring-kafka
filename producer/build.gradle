@@ -1,0 +1,55 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${spring_boot_version}")
+        classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:${gradle_avro_version}"
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+apply plugin: 'com.commercehub.gradle.plugin.avro'
+
+group = 'spring-kafka-producer'
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+repositories {
+    jcenter()
+    maven {
+        url "http://packages.confluent.io/maven/"
+    }
+}
+
+dependencies {
+
+    compile 'org.springframework.boot:spring-boot-starter'
+    compile 'org.springframework.kafka:spring-kafka'
+
+    compile("org.apache.kafka:kafka_2.13:${kafka_client_version}")
+    compile("org.apache.kafka:kafka-clients:${kafka_client_version}")
+    compile("org.apache.kafka:kafka-clients:${kafka_client_version}:test")
+    compile("org.apache.kafka:kafka-streams:${kafka_streams_version}")
+    //compile("io.confluent:kafka-streams-avro-serde:${avro_serde_version}")
+
+    compile "joda-time:joda-time:${joda_version}"
+    compile "org.apache.avro:avro:${avro_version}"
+    compile "io.confluent:kafka-avro-serializer:${kafka_avro_version}"
+
+    compileOnly "org.projectlombok:lombok:${lombok_version}"
+    annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+    testCompile 'org.springframework.kafka:spring-kafka-test'
+    //testCompile("org.apache.kafka:kafka-streams-test-utils:${kafka_streams_test_utils_version}")
+    testCompile("org.apache.kafka:kafka_2.13:${kafka_client_version}:test")
+    testCompile group: 'org.spockframework', name: 'spock-core', version: spock_version
+    testCompile group: 'org.spockframework', name: 'spock-spring', version: spock_version
+
+    compile "com.github.javafaker:javafaker:1.0.0"
+}
