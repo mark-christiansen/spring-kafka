@@ -1,6 +1,7 @@
 package com.opi.kafka;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,5 +29,17 @@ public class Config {
         factory.setBatchErrorHandler(new SeekToCurrentBatchErrorHandler());
         configurer.configure(factory, kafkaConsumerFactory);
         return factory;
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "consumers.person.enabled", matchIfMissing = false, havingValue = "true")
+    public PersonListener personListener() {
+        return new PersonListener();
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "consumers.generic.enabled", matchIfMissing = false, havingValue = "true")
+    public GenericRecordListener genericRecordListener() {
+        return new GenericRecordListener();
     }
 }

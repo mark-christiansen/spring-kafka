@@ -19,5 +19,12 @@ spring:
   profiles:
     active: development
 
+producers:
+  person.enabled: true
+  generic:
+    enabled: false
+    keySchema: schemas/person-key.avsc
+    valueSchema: schemas/person-value.avsc
+
 topics:
   people: person

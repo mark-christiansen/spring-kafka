@@ -29,5 +29,9 @@ spring:
   profiles:
     active: development
 
+consumers:
+  person.enabled: false
+  generic.enabled: true
+
 topics:
   people: person
