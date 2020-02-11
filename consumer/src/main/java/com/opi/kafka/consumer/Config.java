@@ -1,4 +1,4 @@
-package com.opi.kafka;
+package com.opi.kafka.consumer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

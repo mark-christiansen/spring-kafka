@@ -1,4 +1,4 @@
-package com.opi.kafka;
+package com.opi.kafka.producer;
 
 import org.apache.avro.Schema;
 

@@ -1,7 +1,8 @@
-package com.opi.kafka;
+package com.opi.kafka.consumer;
 
+import com.opi.kafka.streams.avro.Person;
+import com.opi.kafka.streams.avro.PersonKey;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.avro.generic.GenericData;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
@@ -9,17 +10,17 @@ import org.springframework.kafka.support.Acknowledgment;
 import java.util.List;
 
 @Slf4j
-public class GenericRecordListener {
+public class PersonListener {
 
     private static final long WAIT = 0;
 
     @KafkaListener(topics = "${topics.people}")
-    public void listen(List<ConsumerRecord<GenericData.Record, GenericData.Record>> records, Acknowledgment ack) {
+    public void listen(List<ConsumerRecord<PersonKey, Person>> records, Acknowledgment ack) {
 
-        log.info("received {} records", records.size());
-        for (ConsumerRecord<GenericData.Record, GenericData.Record> record : records) {
+        log.info("received {} persons", records.size());
+        for (ConsumerRecord<PersonKey, Person> record : records) {
 
-            //log.info("record received: key = {}, value = {}}", record.key(), record.value());
+            //log.info("person received: key = {}, value = {}}", record.key(), record.value());
             // do stuff
             try {
                 Thread.sleep(WAIT);

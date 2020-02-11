@@ -1,4 +1,4 @@
-package com.opi.kafka;
+package com.opi.kafka.producer;
 
 import com.github.javafaker.Faker;
 import lombok.extern.slf4j.Slf4j;

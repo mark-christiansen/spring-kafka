@@ -1,15 +1,12 @@
-package com.opi.kafka;
+package com.opi.kafka.producer;
 
 import com.github.javafaker.Faker;
-import com.opi.kafka.avro.Person;
-import com.opi.kafka.avro.PersonKey;
+import com.opi.kafka.streams.avro.Person;
+import com.opi.kafka.streams.avro.PersonKey;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
 
 @Slf4j
 public class PersonProducer {

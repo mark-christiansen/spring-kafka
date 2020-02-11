@@ -1,7 +1,7 @@
-package com.opi.kafka;
+package com.opi.kafka.producer;
 
-import com.opi.kafka.avro.Person;
-import com.opi.kafka.avro.PersonKey;
+import com.opi.kafka.streams.avro.Person;
+import com.opi.kafka.streams.avro.PersonKey;
 import org.apache.avro.generic.GenericData;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
