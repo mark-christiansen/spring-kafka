@@ -1,0 +1,91 @@
+{
+  "namespace": "com.opi.kafka.avro",
+  "type": "record",
+  "name": "Thing",
+  "doc": "A thing",
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "name": "UUID",
+        "type": "fixed",
+        "size": 16
+      },
+      "doc": "Thing ID"
+    },
+    {
+      "name": "sampleString",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleInt",
+      "type": "int",
+      "doc": "int"
+    },
+    {
+      "name": "sampleLong",
+      "type": "long",
+      "doc": "long"
+    },
+    {
+      "name": "sampleBoolean",
+      "type": "boolean",
+      "doc": "boolean"
+    },
+    {
+      "name": "sampleFloat",
+      "type": "float",
+      "doc": "float"
+    },
+    {
+      "name": "sampleDouble",
+      "type": "double",
+      "doc": "double"
+    },
+    {
+      "name": "sampleEnum",
+      "type": {
+        "name": "Code",
+        "type": "enum",
+        "symbols": ["A", "B", "C"]
+      },
+      "doc": "enum"
+    },
+    {
+      "name": "sampleUnion",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "union"
+    },
+    {
+      "name": "sampleDate",
+      "type": "int",
+      "logicalType": "date",
+      "doc": "date"
+    },
+    {
+      "name": "sampleTimeMillis",
+      "type": "int",
+      "logicalType": "timestamp-millis",
+      "doc": "timestamp-millis"
+    },
+    {
+      "name": "sampleTimeMicros",
+      "type": "long",
+      "logicalType": "timestamp-micros",
+      "doc": "timestamp-micros"
+    },
+    {
+      "name": "sampleDecimal",
+      "type": "bytes",
+      "logicalType": "decimal",
+      "precision": 12,
+      "scale": 2,
+      "doc": "decimal"
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "namespace": "com.opi.kafka.avro",
+  "type": "record",
+  "name": "EncryptedThing",
+  "doc": "An encrypted thing",
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "name": "UUID",
+        "type": "fixed",
+        "size": 16
+      },
+      "doc": "Thing ID"
+    },
+    {
+      "name": "sampleString",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleInt",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleLong",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleBoolean",
+      "type": "boolean",
+      "doc": "boolean"
+    },
+    {
+      "name": "sampleFloat",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleDouble",
+      "type": "string",
+      "doc": "string"
+    },
+    {
+      "name": "sampleEnum",
+      "type": {
+        "name": "Code",
+        "type": "enum",
+        "symbols": ["A", "B", "C"]
+      },
+      "doc": "enum"
+    },
+    {
+      "name": "sampleUnion",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "union"
+    },
+    {
+      "name": "sampleDate",
+      "type": "string",
+      "doc": "date"
+    },
+    {
+      "name": "sampleTimeMillis",
+      "type": "string",
+      "doc": "timestamp-millis"
+    },
+    {
+      "name": "sampleTimeMicros",
+      "type": "string",
+      "doc": "timestamp-micros"
+    },
+    {
+      "name": "sampleDecimal",
+      "type": "string",
+      "doc": "decimal"
+    }
+  ]
+}

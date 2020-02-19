@@ -1,8 +1,43 @@
 streams:
   phone:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: phone
     outputTopic: phone-encrypted
     keySchema: schemas/phone-encrypted-key.avsc
     valueSchema: schemas/phone-encrypted-value.avsc
+  thing-0:
+    enabled: true
+    type: generic
+    inputTopic: thing-0
+    outputTopic: thing-0-encrypted
+    keySchema: schemas/thing-encrypted-key.avsc
+    valueSchema: schemas/thing-encrypted-value.avsc
+  thing-1:
+    enabled: true
+    type: generic
+    inputTopic: thing-1
+    outputTopic: thing-1-encrypted
+    keySchema: schemas/thing-encrypted-key.avsc
+    valueSchema: schemas/thing-encrypted-value.avsc
+  thing-2:
+    enabled: true
+    type: generic
+    inputTopic: thing-2
+    outputTopic: thing-2-encrypted
+    keySchema: schemas/thing-encrypted-key.avsc
+    valueSchema: schemas/thing-encrypted-value.avsc
+  thing-3:
+    enabled: true
+    type: generic
+    inputTopic: thing-3
+    outputTopic: thing-3-encrypted
+    keySchema: schemas/thing-encrypted-key.avsc
+    valueSchema: schemas/thing-encrypted-value.avsc
+  thing-4:
+    enabled: true
+    type: generic
+    inputTopic: thing-4
+    outputTopic: thing-4-encrypted
+    keySchema: schemas/thing-encrypted-key.avsc
+    valueSchema: schemas/thing-encrypted-value.avsc

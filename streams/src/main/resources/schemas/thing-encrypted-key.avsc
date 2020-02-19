@@ -1,8 +1,8 @@
 {
   "namespace": "com.opi.kafka.avro",
   "type": "record",
-  "name": "PersonKey",
-  "doc": "A person key",
+  "name": "EncryptedThingKey",
+  "doc": "An encrypted thing key",
   "fields": [
     {
       "name": "id",
@@ -11,7 +11,7 @@
         "type" : "fixed",
         "size" : 16
       },
-      "doc": "Person ID"
+      "doc": "Thing ID"
     }
   ]
 }

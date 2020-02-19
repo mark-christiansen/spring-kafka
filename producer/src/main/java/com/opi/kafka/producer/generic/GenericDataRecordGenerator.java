@@ -4,10 +4,11 @@ import com.github.javafaker.Faker;
 import com.opi.kafka.producer.UuidUtil;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericFixed;
 import org.apache.kafka.streams.KeyValue;
 
 import java.math.BigDecimal;
+import java.nio.ByteBuffer;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,13 @@ public class GenericDataRecordGenerator {
                         record.put(f.name(), createBigDecimal(scale, precision));
                         break;
                     case "timestamp-micros":
-                        record.put(f.name(), faker.date().past(365, TimeUnit.DAYS).toInstant());
+                        record.put(f.name(), Instant.ofEpochMilli(faker.number().numberBetween(0, System.currentTimeMillis())));
+                        break;
+                    case "timestamp-millis":
+                        record.put(f.name(), Instant.ofEpochMilli(faker.number().numberBetween(0, System.currentTimeMillis())));
+                        break;
+                    case "date":
+                        record.put(f.name(), faker.date().past(365, TimeUnit.DAYS));
                         break;
                     default:
                         throw new RuntimeException(format("Field \"%s\" logical type \"%s\" unknown", f.name(), fieldSchema.getLogicalType().getName()));
@@ -72,7 +79,7 @@ public class GenericDataRecordGenerator {
 
                 switch (fieldSchema.getType().getName()) {
                     case "bytes":
-                        record.put(f.name(), faker.letterify("??????").getBytes());
+                        record.put(f.name(), ByteBuffer.wrap(faker.letterify("??????").getBytes()));
                         break;
                     case "enum":
                         List<String> symbols = fieldSchema.getEnumSymbols();
@@ -92,6 +99,15 @@ public class GenericDataRecordGenerator {
                         break;
                     case "long":
                         record.put(f.name(), faker.number().numberBetween(1L, Long.MAX_VALUE));
+                        break;
+                    case "double":
+                        record.put(f.name(), faker.number().randomDouble(2, 1L, Long.MAX_VALUE));
+                        break;
+                    case "float":
+                        record.put(f.name(), (float) faker.number().randomDouble(4, 1, 1000));
+                        break;
+                    case "boolean":
+                        record.put(f.name(), faker.bool().bool());
                         break;
                     case "string":
                         if (f.name().toUpperCase().contains("ADDRESS")) {

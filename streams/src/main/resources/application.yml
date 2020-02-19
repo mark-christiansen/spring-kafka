@@ -23,6 +23,8 @@ spring:
       default.key.serde: io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
       default.value.serde: io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
       default.timestamp.extractor: org.apache.kafka.streams.processor.WallclockTimestampExtractor
+      default.deserialization.exception.handler: com.opi.kafka.streams.CustomDeserializationExceptionHandler
+      default.production.exception.handler: com.opi.kafka.streams.CustomProductionExceptionHandler
       schema.registry.url: http://localhost:8081
       # for changelog topics and repartition topics
       replication.factor: 3

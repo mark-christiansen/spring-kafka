@@ -10,6 +10,7 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -45,11 +46,16 @@ public class Config {
             Executor executor = executor();
             Map<String, Map<String, String>> streamsProps = toMap(streamProperties());
 
+            CountDownLatch latch = new CountDownLatch(streamsProps.size());
+
             for (Map.Entry<String, Map<String, String>> entry : streamsProps.entrySet()) {
+
                 Map<String, String> value = entry.getValue();
                 GenericDataRecordStream stream = new GenericDataRecordStream(entry.getKey(), value.get("inputTopic"),
                         value.get("outputTopic"), value.get("keySchema"), value.get("valueSchema"), kafkaProps);
                 streams.add(stream);
+
+                stream.addListener(latch::countDown);
                 executor.execute(stream::start);
             }
 
@@ -60,6 +66,14 @@ public class Config {
                     streams.forEach(GenericDataRecordStream::close);
                 }
             });
+
+            // start background thread to listen until all streams are stopped and then stop the Spring Boot application
+            new Thread(() -> {
+                try {
+                    latch.await();
+                } catch (InterruptedException ignored) {}
+                context.close();
+            }).start();
         };
     }
 

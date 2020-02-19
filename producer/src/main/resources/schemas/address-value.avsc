@@ -6,14 +6,16 @@
   "fields": [
     {
       "name": "id",
-      "type": "string",
-      "logicalType": "uuid",
+      "type": {
+        "name" : "UUID",
+        "type" : "fixed",
+        "size" : 16
+      },
       "doc": "Address ID"
     },
     {
       "name": "personId",
-      "type": "string",
-      "logicalType": "uuid",
+      "type": "UUID",
       "doc": "Person ID"
     },
     {
