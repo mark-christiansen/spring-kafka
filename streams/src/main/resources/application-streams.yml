@@ -1,0 +1,8 @@
+streams:
+  phone:
+    enabled: true
+    type: generic
+    inputTopic: phone
+    outputTopic: phone-encrypted
+    keySchema: schemas/phone-encrypted-key.avsc
+    valueSchema: schemas/phone-encrypted-value.avsc

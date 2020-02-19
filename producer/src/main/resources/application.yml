@@ -18,13 +18,7 @@ spring:
       application-id: spring-kafka-stream
   profiles:
     active: development
+    include: producers
 
-producers:
-  person.enabled: true
-  generic:
-    enabled: false
-    keySchema: schemas/person-key.avsc
-    valueSchema: schemas/person-value.avsc
-
-topics:
-  people: person
+schedule.send.rate.ms: 10
+task.pool.size: 100

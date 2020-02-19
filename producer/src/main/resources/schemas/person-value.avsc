@@ -5,27 +5,40 @@
   "doc": "A person",
   "fields": [
     {
-      "name": "name",
+      "name": "id",
       "type": "string",
-      "doc": "Person full name"
+      "logicalType": "uuid",
+      "doc": "Person ID"
     },
     {
-      "name": "address",
+      "name": "firstName",
+      "type": "string",
+      "doc": "Person first name"
+    },
+    {
+      "name": "middleName",
       "type": [
         "null",
         "string"
       ],
       "default": null,
-      "doc": "Person home address"
+      "doc": "Person middle name"
     },
     {
-      "name": "age",
-      "type": [
-        "null",
-        "int"
-      ],
-      "default": null,
-      "doc": "Person age is years"
+      "name": "lastName",
+      "type": "string",
+      "doc": "Person last name"
+    },
+    {
+      "name": "birthDate",
+      "type": "int",
+      "logicalType": "date",
+      "doc": "Person birth date"
+    },
+    {
+      "name": "salary",
+      "type": "double",
+      "doc": "Person salary"
     }
   ]
 }

@@ -1,4 +1,4 @@
-package com.opi.kafka.streams;
+package com.opi.kafka.streams.specific;
 
 import org.apache.avro.generic.GenericData;
 import org.apache.kafka.streams.KafkaStreams;
@@ -81,7 +81,7 @@ class UppercaseTransformer implements Transformer<Object, Object, KeyValue<Objec
         GenericData.Record valueRecord  = (GenericData.Record) value;
         valueRecord.getSchema().getFields().forEach(f -> {
             Object val = valueRecord.get(f.name());
-            if (val != null && val instanceof String) {
+            if (val instanceof String) {
                 valueRecord.put(f.name(), ((String) val).toUpperCase());
             }
         });

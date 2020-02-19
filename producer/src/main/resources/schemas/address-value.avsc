@@ -1,0 +1,63 @@
+{
+  "namespace": "com.opi.kafka.avro",
+  "type": "record",
+  "name": "Address",
+  "doc": "An person's address",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string",
+      "logicalType": "uuid",
+      "doc": "Address ID"
+    },
+    {
+      "name": "personId",
+      "type": "string",
+      "logicalType": "uuid",
+      "doc": "Person ID"
+    },
+    {
+      "name": "line1",
+      "type": "string",
+      "doc": "Address Line 1"
+    },
+    {
+      "name": "line2",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Address Line 2"
+    },
+    {
+      "name": "line3",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Address Line 3"
+    },
+    {
+      "name": "city",
+      "type": "string",
+      "doc": "Address city"
+    },
+    {
+      "name": "state",
+      "type": "string",
+      "doc": "Address state"
+    },
+    {
+      "name": "country",
+      "type": "string",
+      "doc": "Address country"
+    },
+    {
+      "name": "postalCode",
+      "type": "string",
+      "doc": "Address postal code"
+    }
+  ]
+}

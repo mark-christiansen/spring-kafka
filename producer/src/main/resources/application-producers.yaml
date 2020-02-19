@@ -1,0 +1,19 @@
+producers:
+  phone:
+    enabled: true
+    type: generic
+    outputTopic: phone
+    keySchema: schemas/phone-key.avsc
+    valueSchema: schemas/phone-value.avsc
+    batchSize: 100
+#  person:
+#    enabled: true
+#    type: specific
+#    topic: person
+#    generatorClass: com.opi.kafka.producer.specific.PersonGenerator
+#  address:
+#    enabled: false
+#    type: generic
+#    topic: address
+#    keySchema: schemas/address-key.avsc
+#    valueSchema: schemas/address-value.avsc

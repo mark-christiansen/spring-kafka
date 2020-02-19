@@ -15,6 +15,7 @@ spring:
       group-id: person-consumer-spring
       key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      concurrency: 10
       properties:
         max.poll.interval.ms: 20000
         session.timeout.ms: 20000
@@ -23,15 +24,9 @@ spring:
         group.initial.rebalance.delay.ms: 5000
     properties: # for KafkaAvroDeserializer
       schema.registry.url: http://localhost:8081
-      specific.avro.reader: true
+      specific.avro.reader: false
     streams:
       application-id: spring-kafka-stream
   profiles:
     active: development
-
-consumers:
-  person.enabled: false
-  generic.enabled: true
-
-topics:
-  people: person
+    include: consumers

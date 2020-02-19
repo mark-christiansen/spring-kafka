@@ -1,0 +1,50 @@
+{
+  "namespace": "com.opi.kafka.avro",
+  "type": "record",
+  "name": "Phone",
+  "doc": "A person's phone number",
+  "fields": [
+    {
+      "name": "id",
+      "type": {
+        "name" : "UUID",
+        "type" : "fixed",
+        "size" : 16
+      },
+      "doc": "Phone ID"
+    },
+    {
+      "name": "personId",
+      "type": "UUID",
+      "doc": "Person ID"
+    },
+    {
+      "name": "type",
+      "type": {
+        "name": "PhoneType",
+        "type": "enum",
+        "symbols": ["HOME", "CELL", "BUSINESS"]
+      },
+      "doc": "Phone type"
+    },
+    {
+      "name": "areaCode",
+      "type": "int",
+      "doc": "Phone area code"
+    },
+    {
+      "name": "number",
+      "type": "int",
+      "doc": "Phone number"
+    },
+    {
+      "name": "extension",
+      "type": [
+        "null",
+        "int"
+      ],
+      "default": null,
+      "doc": "Phone extension"
+    }
+  ]
+}

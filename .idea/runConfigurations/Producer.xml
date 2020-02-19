@@ -1,10 +1,10 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Producer" type="Application" factoryName="Application">
-    <option name="MAIN_CLASS_NAME" value="com.opi.kafka.Application" />
+    <option name="MAIN_CLASS_NAME" value="com.opi.kafka.producer.Application" />
     <module name="spring-kafka.producer.main" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="com.opi.kafka.*" />
+        <option name="PATTERN" value="com.opi.kafka.producer.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

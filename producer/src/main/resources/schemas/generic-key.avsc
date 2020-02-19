@@ -1,14 +1,14 @@
 {
   "namespace": "com.opi.kafka.avro",
   "type": "record",
-  "name": "PersonKey",
-  "doc": "A person key",
+  "name": "GenericKey",
+  "doc": "A generic key",
   "fields": [
     {
       "name": "id",
       "type": "string",
       "logicalType": "uuid",
-      "doc": "Person ID"
+      "doc": "ID"
     }
   ]
 }

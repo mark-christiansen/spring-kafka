@@ -1,0 +1,5 @@
+consumers:
+  phone-encrypted:
+    enabled: true
+    type: generic
+    inputTopic: phone-encrypted
