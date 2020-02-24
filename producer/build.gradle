@@ -19,6 +19,10 @@ group = 'spring-kafka-producer'
 version = '0.0.1'
 sourceCompatibility = 1.8
 
+bootJar {
+    mainClassName = 'com.opi.kafka.producer.Application'
+}
+
 repositories {
     jcenter()
     maven {

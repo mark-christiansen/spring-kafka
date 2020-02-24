@@ -9,10 +9,7 @@ import org.apache.kafka.streams.KeyValue;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
@@ -20,6 +17,22 @@ import static java.lang.String.format;
 public class GenericDataRecordGenerator {
 
     private final Faker faker = new Faker();
+    private final List<Object> primaryKeys = new ArrayList<>();
+    private final Set<String> primaryKeyFields = new HashSet<>();
+    private final Map<String, String> foreignKeyFields = new HashMap<>();
+    private int maxPrimaryKeys;
+
+    public void addPrimaryKey(String primaryKey) {
+        primaryKeyFields.add(primaryKey);
+    }
+
+    public void addForeignKey(String foreignKey, String primaryKey) {
+        foreignKeyFields.put(foreignKey, primaryKey);
+    }
+
+    public void setMaxPrimaryKey(int maxPrimaryKeys) {
+        this.maxPrimaryKeys = maxPrimaryKeys;
+    }
 
     public List<KeyValue<GenericData.Record, GenericData.Record>> generateBatch(int batchSize, Schema keySchema, Schema valueSchema) {
 
@@ -122,7 +135,31 @@ public class GenericDataRecordGenerator {
                         throw new RuntimeException(format("Field \"%s\" type \"%s\" unknown", f.name(), fieldSchema.getType().getName()));
                 }
             }
+
+            String fullFieldName = schema.getName() + "." + f.name();
+
+            if (primaryKeyFields.contains(fullFieldName)) {
+                if (primaryKeys.size() < maxPrimaryKeys) {
+                    primaryKeys.add(record.get(f.name()));
+                } else {
+                    // randomly pick a primary key from the list
+                    int index = faker.number().numberBetween(0, primaryKeys.size()-1);
+                    record.put(f.name(), primaryKeys.get(index));
+                }
+            }
+
+            if (foreignKeyFields.containsKey(fullFieldName)) {
+                if (primaryKeys.size() > maxPrimaryKeys/4) {
+                    // randomly pick a primary key from the list
+                    int index = faker.number().numberBetween(0, primaryKeys.size() - 1);
+                    record.put(f.name(), primaryKeys.get(index));
+                } else {
+                    primaryKeys.add(record.get(f.name()));
+                }
+            }
+
         });
+
         return record;
     }
 

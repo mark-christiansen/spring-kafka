@@ -1,4 +1,4 @@
-package com.opi.kafka.streams.generic;
+package com.opi.kafka.streams.generic.transform;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

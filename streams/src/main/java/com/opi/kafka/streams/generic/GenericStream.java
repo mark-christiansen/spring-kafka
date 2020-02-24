@@ -5,11 +5,8 @@ import com.opi.kafka.streams.StreamStateListener;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsBuilder;
-import org.apache.kafka.streams.Topology;
+import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.KStream;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -23,35 +20,55 @@ import java.util.function.Consumer;
 import static java.lang.String.format;
 
 @Slf4j
-public class GenericDataRecordStream {
+public class GenericStream {
 
-    private String applicationId;
-    private String inputTopic;
-    private String outputTopic;
-    private Schema keySchema;
-    private Schema valueSchema;
-    private Properties kafkaStreamsProperties;
+    protected final String applicationId;
+    protected final String[] inputTopics;
+    protected final String[] outputTopics;
+    protected final Schema[] keySchemas;
+    protected final Schema[] valueSchemas;
+    protected final Properties kafkaStreamsProperties;
+
     private KafkaStreams streams;
     private CountDownLatch closeLatch = new CountDownLatch(1);
     private ReentrantLock listenerLock = new ReentrantLock();
     private List<StreamStateListener> listeners = new ArrayList<>();
 
-    @Autowired
-    public GenericDataRecordStream(String applicationId,
-                                   String inputTopic,
-                                   String outputTopic,
-                                   String keySchemaFilepath,
-                                   String valueSchemaFilepath,
-                                   Properties kafkaStreamsProperties)
+    public GenericStream(String applicationId,
+                         String inputTopic,
+                         String outputTopic,
+                         String keySchemaFilepath,
+                         String valueSchemaFilepath,
+                         Properties kafkaStreamsProperties)
+            throws IOException, URISyntaxException {
+        this(applicationId, new String[] {inputTopic}, new String[] {outputTopic}, new String[] {keySchemaFilepath},
+                new String[] {valueSchemaFilepath}, kafkaStreamsProperties);
+    }
+
+    public GenericStream(String applicationId,
+                         String[] inputTopics,
+                         String[] outputTopics,
+                         String[] keySchemaFilepaths,
+                         String[] valueSchemaFilepaths,
+                         Properties kafkaStreamsProperties)
             throws IOException, URISyntaxException {
 
         this.applicationId = applicationId;
-        this.inputTopic = inputTopic;
-        this.outputTopic = outputTopic;
+        this.inputTopics = inputTopics;
+        this.outputTopics = outputTopics;
         this.kafkaStreamsProperties = kafkaStreamsProperties;
+
         SchemaLoader schemaLoader = new SchemaLoader();
-        this.keySchema = schemaLoader.getSchema(keySchemaFilepath);
-        this.valueSchema = schemaLoader.getSchema(valueSchemaFilepath);
+
+        this.keySchemas = new Schema[keySchemaFilepaths.length];
+        for (int i = 0; i < keySchemaFilepaths.length; i++) {
+            this.keySchemas[i] = schemaLoader.getSchema(keySchemaFilepaths[i]);
+        }
+
+        this.valueSchemas = new Schema[valueSchemaFilepaths.length];
+        for (int i = 0; i < valueSchemaFilepaths.length; i++) {
+            this.valueSchemas[i] = schemaLoader.getSchema(valueSchemaFilepaths[i]);
+        }
         setup();
     }
 
@@ -63,10 +80,11 @@ public class GenericDataRecordStream {
             streams.start();
             closeLatch.await();
         } catch (Throwable t) {
-            log.error("Fatal error occurred in stream", t);
+            log.error(format("Fatal error occurred in stream \"%s\"", applicationId), t);
         }
         // close stream if exception occurred or close() was called
         streams.close();
+        log.info(format("\"%s\" stream closed", applicationId));
 
         // notify stream listeners that the stream has closed
         notifyStateChange(StreamStateListener::closed);
@@ -85,6 +103,13 @@ public class GenericDataRecordStream {
         }
     }
 
+    public StreamsBuilder streamsBuilder() {
+        final StreamsBuilder builder = new StreamsBuilder();
+        KStream<GenericData.Record, GenericData.Record> stream = builder.stream(inputTopics[0]);
+        stream.to(outputTopics[0]);
+        return builder;
+    }
+
     private void notifyStateChange(Consumer<? super StreamStateListener> action) {
         listenerLock.lock();
         try {
@@ -96,21 +121,22 @@ public class GenericDataRecordStream {
 
     private void setup() {
 
-        final StreamsBuilder builder = new StreamsBuilder();
-        KStream<GenericData.Record, GenericData.Record> stream = builder.stream(inputTopic);
-        stream.transform(() -> new EncryptTransformer("pumpernickel", keySchema, valueSchema)).to(outputTopic);
 
-        final Topology topology = builder.build();
+        kafkaStreamsProperties.setProperty(StreamsConfig.TOPOLOGY_OPTIMIZATION, StreamsConfig.OPTIMIZE);
+        final Topology topology = streamsBuilder().build(kafkaStreamsProperties);
+        final TopologyDescription description = topology.describe();
+        log.info("Topology: " + description);
+
         // application.id is used as Kafka consumer group.id for coordination in kstreams, so you cannot set group.id explicitly
         kafkaStreamsProperties.put("application.id", format("spring-%s-stream", applicationId));
         this.streams = new KafkaStreams(topology, kafkaStreamsProperties);
+        //this.streams.setUncaughtExceptionHandler((thread, throwable) -> log.error(format("Error occurred in stream \"%s\"", applicationId), throwable));
 
         // add a state listener to detect if an error occurs while streaming and close this stream immediately - fail
         // fast strategy
         this.streams.setStateListener((newState, oldState) -> {
             if (newState.equals(KafkaStreams.State.ERROR)) {
-                log.error("Fatal error occurred and now closing stream");
-                close();
+                log.error(format("Fatal error occurred and now closing stream \"%s\"", applicationId));
             }
         });
     }

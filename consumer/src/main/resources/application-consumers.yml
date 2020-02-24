@@ -1,25 +1,30 @@
 consumers:
+  account:
+    enabled: true
+    type: generic-account
+    inputTopic: account
+    schemas: schemas/account-value.avsc,schemas/address-value.avsc,schemas/phone-value.avsc
   phone-encrypted:
     enabled: false
     type: generic
     inputTopic: phone-encrypted
   thing-0-encrypted:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: thing-0-encrypted
   thing-1-encrypted:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: thing-1-encrypted
   thing-2-encrypted:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: thing-2-encrypted
   thing-3-encrypted:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: thing-3-encrypted
   thing-4-encrypted:
-    enabled: true
+    enabled: false
     type: generic
     inputTopic: thing-4-encrypted

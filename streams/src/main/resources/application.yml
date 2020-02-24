@@ -1,6 +1,8 @@
 spring:
   application:
     name: spring-kafka-producer
+
+  deserialization.recoverer: org.springframework.kafka.listener.DeadLetterPublishingRecoverer
   kafka:
     bootstrap-servers:
       - localhost:9092
@@ -23,13 +25,14 @@ spring:
       default.key.serde: io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
       default.value.serde: io.confluent.kafka.streams.serdes.avro.GenericAvroSerde
       default.timestamp.extractor: org.apache.kafka.streams.processor.WallclockTimestampExtractor
-      default.deserialization.exception.handler: com.opi.kafka.streams.CustomDeserializationExceptionHandler
-      default.production.exception.handler: com.opi.kafka.streams.CustomProductionExceptionHandler
+      default.deserialization.exception.handler: com.opi.kafka.streams.error.DefaultDeserializationExceptionHandler
+      default.production.exception.handler: com.opi.kafka.streams.error.DefaultProductionExceptionHandler
       schema.registry.url: http://localhost:8081
-      # for changelog topics and repartition topics
+      # for changelog topics and repartition topics, match other topics to guarantee fault tolerance
       replication.factor: 3
+      min.insync.replicas: 2
       request.timeout.ms: 60000
-      session.timeout.ms: 120000
+      session.timeout.ms: 30000
       processing.guarantee: at_least_once
       retries: 2147483647
       max.in.flight.requests.per.connection: 1
@@ -37,8 +40,11 @@ spring:
       commit.interval.ms: 30000
       num.stream.threads: 10
       poll.ms: 100
+      # replica state stores to switch to in failover situations
+      #num.standby.replicas: 0
       # consumer configuration
-      consumer.max.poll.records: 1000
+      #main.consumer.max.poll.interval.ms: 300000
+      #main.consumer.max.poll.records: 1000
   profiles:
     active: development
     include: streams

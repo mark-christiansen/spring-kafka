@@ -17,11 +17,12 @@ spring:
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       concurrency: 10
       properties:
-        max.poll.interval.ms: 20000
-        session.timeout.ms: 20000
+        max.poll.interval.ms: 300000
+        session.timeout.ms: 10000
         max.poll.records: 500
-        request.timeout.ms: 25000
+        request.timeout.ms: 30000
         group.initial.rebalance.delay.ms: 5000
+        fetch.max.wait.ms: 1000
     properties: # for KafkaAvroDeserializer
       schema.registry.url: http://localhost:8081
       specific.avro.reader: false
@@ -30,3 +31,8 @@ spring:
   profiles:
     active: development
     include: consumers
+
+database:
+  url: jdbc:mariadb://localhost/account?maxPoolSize=20
+  username: account_user
+  password: pump3rn1ck3l

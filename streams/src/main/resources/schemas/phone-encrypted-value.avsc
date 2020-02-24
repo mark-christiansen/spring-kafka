@@ -6,16 +6,12 @@
   "fields": [
     {
       "name": "id",
-      "type": {
-        "name" : "UUID",
-        "type" : "fixed",
-        "size" : 16
-      },
+      "type": "long",
       "doc": "Phone ID"
     },
     {
       "name": "personId",
-      "type": "UUID",
+      "type": "long",
       "doc": "Person ID"
     },
     {

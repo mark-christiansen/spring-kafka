@@ -6,11 +6,7 @@
   "fields": [
     {
       "name": "id",
-      "type": {
-        "name" : "UUID",
-        "type" : "fixed",
-        "size" : 16
-      },
+      "type": "long",
       "doc": "Person ID"
     },
     {

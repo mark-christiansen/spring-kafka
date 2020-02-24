@@ -1,6 +1,10 @@
 package com.opi.kafka.streams;
 
-import com.opi.kafka.streams.generic.GenericDataRecordStream;
+import com.opi.kafka.streams.error.DeadLetterHandler;
+import com.opi.kafka.streams.generic.GenericStream;
+import com.opi.kafka.streams.generic.aggregate.GenericAggregateStream;
+import com.opi.kafka.streams.generic.transform.GenericTransformStream;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -8,13 +12,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.GenericApplicationContext;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
+import org.springframework.kafka.core.KafkaTemplate;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static com.opi.kafka.streams.error.DeadLetterHandler.DEAD_LETTER_HANDLER;
+
 @Configuration
+@Slf4j
 public class Config {
 
     @Value("${task.pool.size:100}")
@@ -38,23 +48,24 @@ public class Config {
     }
 
     @Bean
-    public ApplicationRunner runner(KafkaListenerEndpointRegistry registry, GenericApplicationContext context) {
+    public ApplicationRunner runner(KafkaListenerEndpointRegistry registry, GenericApplicationContext context, KafkaTemplate kafkaTemplate) {
         return args -> {
 
-            List<GenericDataRecordStream> streams = new ArrayList<>();
-            Properties kafkaProps = kafkaProperties();
+            List<GenericStream> streams = new ArrayList<>();
             Executor executor = executor();
             Map<String, Map<String, String>> streamsProps = toMap(streamProperties());
+
+            // Get the Kafka settings and add the dead letter handler to the settings for the exception handlers to use
+            // for sending poison pill messages to the dead letter queue.
+            Properties kafkaProps = kafkaProperties();
+            DeadLetterHandler deadLetterHandler = new DeadLetterHandler(kafkaTemplate);
+            kafkaProps.put(DEAD_LETTER_HANDLER, deadLetterHandler);
 
             CountDownLatch latch = new CountDownLatch(streamsProps.size());
 
             for (Map.Entry<String, Map<String, String>> entry : streamsProps.entrySet()) {
-
-                Map<String, String> value = entry.getValue();
-                GenericDataRecordStream stream = new GenericDataRecordStream(entry.getKey(), value.get("inputTopic"),
-                        value.get("outputTopic"), value.get("keySchema"), value.get("valueSchema"), kafkaProps);
+                GenericStream stream = createGenericStream(kafkaProps.getProperty("application.id"), entry.getValue(), kafkaProps);
                 streams.add(stream);
-
                 stream.addListener(latch::countDown);
                 executor.execute(stream::start);
             }
@@ -63,7 +74,8 @@ public class Config {
             Runtime.getRuntime().addShutdownHook(new Thread("streams-shutdown-hook") {
                 @Override
                 public void run() {
-                    streams.forEach(GenericDataRecordStream::close);
+                    log.info("Shutdown hook activated");
+                    streams.forEach(GenericStream::close);
                 }
             });
 
@@ -92,5 +104,26 @@ public class Config {
         // remove all of the streams that are disabled
         map.entrySet().removeIf(entry -> !Boolean.parseBoolean(entry.getValue().get("enabled")));
         return map;
+    }
+
+    private GenericStream createGenericStream(String applicationId, Map<String, String> props, Properties kafkaProps)
+            throws IOException, URISyntaxException {
+
+        switch (props.get("type")) {
+            case "generic-aggregate":
+
+                String[] inputTopics = props.get("inputTopic").split(",");
+                String[] keySchemas = props.get("keySchema").split(",");
+                String[] valueSchemas = props.get("valueSchema").split(",");
+                return new GenericAggregateStream(applicationId, inputTopics, props.get("outputTopic"), keySchemas, valueSchemas, kafkaProps);
+
+            case "generic-transform":
+                return new GenericTransformStream(applicationId, props.get("inputTopic"),
+                        props.get("outputTopic"), props.get("keySchema"), props.get("valueSchema"), kafkaProps);
+            default:
+                return new GenericStream(applicationId, props.get("inputTopic"), props.get("outputTopic"),
+                        props.get("keySchema"), props.get("valueSchema"), kafkaProps);
+
+        }
     }
 }

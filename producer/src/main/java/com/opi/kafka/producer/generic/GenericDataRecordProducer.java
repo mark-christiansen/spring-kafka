@@ -8,6 +8,7 @@ import org.apache.kafka.streams.KeyValue;
 import org.springframework.kafka.core.KafkaTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -18,7 +19,7 @@ public class GenericDataRecordProducer implements Producer {
     private final Schema valueSchema;
     private final String topicName;
     private final int batchSize;
-    private final GenericDataRecordGenerator dataGenerator = new GenericDataRecordGenerator();
+    private GenericDataRecordGenerator dataGenerator = new GenericDataRecordGenerator();
     private final AtomicInteger counter = new AtomicInteger(0);
 
     public GenericDataRecordProducer(KafkaTemplate<GenericData.Record, GenericData.Record> kafkaTemplate,
@@ -31,6 +32,10 @@ public class GenericDataRecordProducer implements Producer {
         this.valueSchema = valueSchema;
         this.topicName = topicName;
         this.batchSize = batchSize;
+    }
+
+    public void setDataGenerator(GenericDataRecordGenerator dataGenerator) {
+        this.dataGenerator = dataGenerator;
     }
 
     @Override

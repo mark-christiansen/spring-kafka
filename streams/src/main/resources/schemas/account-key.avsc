@@ -1,13 +1,13 @@
 {
   "namespace": "com.opi.kafka.avro",
   "type": "record",
-  "name": "EncryptedPhoneKey",
-  "doc": "An encrypted phone key",
+  "name": "AccountKey",
+  "doc": "An account key",
   "fields": [
     {
       "name": "id",
       "type": "long",
-      "doc": "Phone ID"
+      "doc": "Person ID"
     }
   ]
 }

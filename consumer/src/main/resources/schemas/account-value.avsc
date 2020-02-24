@@ -1,0 +1,190 @@
+{
+  "namespace": "com.opi.kafka.avro",
+  "type": "record",
+  "name": "Account",
+  "doc": "A person's account",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long",
+      "doc": "Person ID"
+    },
+    {
+      "name": "firstName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Person first name"
+    },
+    {
+      "name": "middleName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Person middle name"
+    },
+    {
+      "name": "lastName",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Person last name"
+    },
+    {
+      "name": "birthDate",
+      "type": [
+        "null",
+        {
+          "type": "int",
+          "logicalType": "date"
+        }
+      ],
+      "default": null,
+      "doc": "Person birth date"
+    },
+    {
+      "name": "salary",
+      "type": [
+        "null",
+        "double"
+      ],
+      "default": null,
+      "doc": "Person salary"
+    },
+    {
+      "name": "addresses",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "namespace": "com.opi.kafka.avro",
+            "type": "record",
+            "name": "Address",
+            "doc": "An person's address",
+            "fields": [
+              {
+                "name": "id",
+                "type": "long",
+                "doc": "Address ID"
+              },
+              {
+                "name": "personId",
+                "type": "long",
+                "doc": "Person ID"
+              },
+              {
+                "name": "line1",
+                "type": "string",
+                "doc": "Address Line 1"
+              },
+              {
+                "name": "line2",
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "doc": "Address Line 2"
+              },
+              {
+                "name": "line3",
+                "type": [
+                  "null",
+                  "string"
+                ],
+                "default": null,
+                "doc": "Address Line 3"
+              },
+              {
+                "name": "city",
+                "type": "string",
+                "doc": "Address city"
+              },
+              {
+                "name": "state",
+                "type": "string",
+                "doc": "Address state"
+              },
+              {
+                "name": "country",
+                "type": "string",
+                "doc": "Address country"
+              },
+              {
+                "name": "postalCode",
+                "type": "string",
+                "doc": "Address postal code"
+              }
+            ]
+          }
+        }
+      ],
+      "default": null,
+      "doc": "Person's addresses"
+    },
+    {
+      "name": "phones",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": {
+            "namespace": "com.opi.kafka.avro",
+            "type": "record",
+            "name": "Phone",
+            "doc": "A person's phone number",
+            "fields": [
+              {
+                "name": "id",
+                "type": "long",
+                "doc": "Phone ID"
+              },
+              {
+                "name": "personId",
+                "type": "long",
+                "doc": "Person ID"
+              },
+              {
+                "name": "type",
+                "type": {
+                  "name": "PhoneType",
+                  "type": "enum",
+                  "symbols": ["HOME", "CELL", "BUSINESS"]
+                },
+                "doc": "Phone type"
+              },
+              {
+                "name": "areaCode",
+                "type": "int",
+                "doc": "Phone area code"
+              },
+              {
+                "name": "number",
+                "type": "int",
+                "doc": "Phone number"
+              },
+              {
+                "name": "extension",
+                "type": [
+                  "null",
+                  "int"
+                ],
+                "default": null,
+                "doc": "Phone extension"
+              }
+            ]
+          }
+        }
+      ],
+      "default": null,
+      "doc": "Person's addresses"
+    }
+  ]
+}

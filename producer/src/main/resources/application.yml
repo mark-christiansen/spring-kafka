@@ -20,5 +20,5 @@ spring:
     active: development
     include: producers
 
-schedule.send.rate.ms: 10
+schedule.send.rate.ms: 100
 task.pool.size: 100

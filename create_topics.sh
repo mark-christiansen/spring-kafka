@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# create the phone topics
+# create the person topics
+../kafka/scripts/create_topic.sh account 10
+../kafka/scripts/create_topic.sh account-transform 10
+../kafka/scripts/create_topic.sh person 10
+../kafka/scripts/create_topic.sh address 10
 ../kafka/scripts/create_topic.sh phone 10
 ../kafka/scripts/create_topic.sh phone-encrypted 10
 

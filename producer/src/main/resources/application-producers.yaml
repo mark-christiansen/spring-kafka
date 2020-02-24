@@ -1,54 +1,63 @@
 producers:
+  person:
+    enabled: true
+    type: generic
+    outputTopic: person
+    keySchema: schemas/person-key.avsc
+    valueSchema: schemas/person-value.avsc
+    batchSize: 100
+    primaryKeys: Person.id
+    maxPrimaryKeys: 100000
+  address:
+    enabled: true
+    type: generic
+    outputTopic: address
+    keySchema: schemas/address-key.avsc
+    valueSchema: schemas/address-value.avsc
+    batchSize: 100
+    generator: person
+    foreignKeys: Address.personId->Person.id
   phone:
-    enabled: false
+    enabled: true
     type: generic
     outputTopic: phone
     keySchema: schemas/phone-key.avsc
     valueSchema: schemas/phone-value.avsc
     batchSize: 100
+    generator: person
+    foreignKeys: Phone.personId->Person.id
   thing-0:
-    enabled: true
+    enabled: false
     type: generic
     outputTopic: thing-0
     keySchema: schemas/thing-key.avsc
     valueSchema: schemas/thing-value.avsc
     batchSize: 100
   thing-1:
-    enabled: true
+    enabled: false
     type: generic
     outputTopic: thing-1
     keySchema: schemas/thing-key.avsc
     valueSchema: schemas/thing-value.avsc
     batchSize: 100
   thing-2:
-    enabled: true
+    enabled: false
     type: generic
     outputTopic: thing-2
     keySchema: schemas/thing-key.avsc
     valueSchema: schemas/thing-value.avsc
     batchSize: 100
   thing-3:
-    enabled: true
+    enabled: false
     type: generic
     outputTopic: thing-3
     keySchema: schemas/thing-key.avsc
     valueSchema: schemas/thing-value.avsc
     batchSize: 100
   thing-4:
-    enabled: true
+    enabled: false
     type: generic
     outputTopic: thing-4
     keySchema: schemas/thing-key.avsc
     valueSchema: schemas/thing-value.avsc
     batchSize: 100
-#  person:
-#    enabled: true
-#    type: specific
-#    topic: person
-#    generatorClass: com.opi.kafka.producer.specific.PersonGenerator
-#  address:
-#    enabled: false
-#    type: generic
-#    topic: address
-#    keySchema: schemas/address-key.avsc
-#    valueSchema: schemas/address-value.avsc

@@ -1,12 +1,16 @@
 package com.opi.kafka.consumer;
 
+import com.opi.kafka.consumer.account.AccountConsumer;
+import com.opi.kafka.consumer.account.AccountService;
 import com.opi.kafka.consumer.generic.GenericDataRecordConsumer;
-import com.opi.kafka.consumer.specific.PersonConsumer;
+import org.apache.avro.Schema;
+import org.mariadb.jdbc.MariaDbPoolDataSource;
+import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.ConcurrentKafkaListenerContainerFactoryConfigurer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -21,6 +25,8 @@ import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.SeekToCurrentBatchErrorHandler;
 import org.springframework.kafka.support.LogIfLevelEnabled;
 
+import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -35,6 +41,12 @@ public class Config {
     private ApplicationContext context;
     @Value("${spring.kafka.consumer.concurrency:10}")
     private int concurrency;
+    @Value("${database.url}")
+    private String dbUrl;
+    @Value("${database.username}")
+    private String dbUsername;
+    @Value("${database.password}")
+    private String dbPassword;
 
     @Bean
     @ConditionalOnMissingBean(name = "kafkaListenerContainerFactory")
@@ -61,9 +73,20 @@ public class Config {
     }
 
     @Bean
+    public DataSource dataSource() throws SQLException {
+        MariaDbPoolDataSource dataSource = new MariaDbPoolDataSource(dbUrl);
+        dataSource.setUser(dbUsername);
+        dataSource.setPassword(dbPassword);
+        return dataSource;
+    }
+
+    @Bean
     public ApplicationRunner runner(KafkaListenerEndpointRegistry registry, GenericApplicationContext context) {
         return args -> {
+
             Map<String, Map<String, String>> consumerProps = toMap(consumerProperties());
+            SchemaLoader schemaLoader = new SchemaLoader();
+
             for (Map.Entry<String, Map<String, String>> entry : consumerProps.entrySet()) {
 
                 String key = entry.getKey();
@@ -76,8 +99,25 @@ public class Config {
                 PropertiesPropertySource source = new PropertiesPropertySource("dynamicListenerId", props);
 
                 context.getEnvironment().getPropertySources().addLast(source);
-                if (entry.getValue().get("type").equals("generic")) {
+                String type = entry.getValue().get("type");
+                if (type.equals("generic")) {
+
                     context.registerBean(key, GenericDataRecordConsumer.class, GenericDataRecordConsumer::new);
+
+                } else if (type.equals("generic-account")) {
+
+                    String[] schemaFilepaths = entry.getValue().get("schemas").split(",");
+                    Schema accountSchema = schemaLoader.getSchema(schemaFilepaths[0]);
+                    Schema addressSchema = schemaLoader.getSchema(schemaFilepaths[1]);
+                    Schema phoneSchema = schemaLoader.getSchema(schemaFilepaths[2]);
+
+                    GenericBeanDefinition beanDef = new GenericBeanDefinition();
+                    beanDef.setBeanClass(AccountConsumer.class);
+                    MutablePropertyValues mpv = new MutablePropertyValues();
+                    mpv.addPropertyValue("accountService", new AccountService(dataSource(), accountSchema, addressSchema, phoneSchema));
+                    beanDef.setPropertyValues(mpv);
+                    context.registerBeanDefinition(key, beanDef);
+
                 } else {
                     Class consumerClass = forName(entry.getValue().get("consumerClass"));
                     context.registerBean(key, consumerClass);

@@ -1,5 +1,6 @@
 package com.opi.kafka.producer;
 
+import com.opi.kafka.producer.generic.GenericDataRecordGenerator;
 import com.opi.kafka.producer.generic.GenericDataRecordProducer;
 import com.opi.kafka.producer.specific.SpecificDataGenerator;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 @Configuration
 @Slf4j
@@ -62,16 +64,50 @@ public class Config implements SchedulingConfigurer {
         ConfigurableListableBeanFactory  beanFactory = ((ConfigurableApplicationContext) applicationContext).getBeanFactory();
         SchemaLoader schemaLoader = schemaLoader();
 
+        Map<String, GenericDataRecordGenerator> generators = new HashMap<>();
+
         for (Map.Entry<String, Map<String, String>> entry : producerProps.entrySet()) {
 
             Map<String, String> props = entry.getValue();
             String type = props.get("type");
             if (type.equals("generic")) {
+
                 Schema keySchema = schemaLoader.getSchema(props.get("keySchema"));
                 Schema valueSchema = schemaLoader.getSchema(props.get("valueSchema"));
                 GenericDataRecordProducer producer = new GenericDataRecordProducer(kafkaTemplate, keySchema, valueSchema,
                         props.get("outputTopic"), Integer.parseInt(props.get("batchSize")));
                 producers.add(producer);
+
+                // find shared generator or create a new one for this producer
+                String generatorName = props.get("generator") != null ? props.get("generator") : entry.getKey();
+                GenericDataRecordGenerator generator = generators.get(generatorName);
+                if (generator == null) {
+                    generator = new GenericDataRecordGenerator();
+                    generators.put(generatorName, generator);
+                }
+                producer.setDataGenerator(generator);
+
+                // set any primary keys on the shared generator
+                String primaryKeys = props.get("primaryKeys");
+                if (primaryKeys != null) {
+                    Stream.of(primaryKeys.split(",")).forEach(generator::addPrimaryKey);
+                }
+
+                String maxPrimaryKeys = props.get("maxPrimaryKeys");
+                if (maxPrimaryKeys != null) {
+                    generator.setMaxPrimaryKey(Integer.parseInt(maxPrimaryKeys));
+                }
+
+                // set any foreign key relationships on the shared generator
+                String foreignKeys = props.get("foreignKeys");
+                if (foreignKeys != null) {
+                    final GenericDataRecordGenerator gen = generator;
+                    Stream.of(foreignKeys.split(",")).forEach(fk -> {
+                        String[] parts = fk.split("->");
+                        gen.addForeignKey(parts[0], parts[1]);
+                    });
+                }
+
             } else {
                 try {
                     SpecificDataGenerator dataGenerator = (SpecificDataGenerator) Class.forName(props.get("dataGeneratorClass"))
@@ -93,7 +129,7 @@ public class Config implements SchedulingConfigurer {
             List<Producer> producers = producers();
 
             taskRegistrar.setScheduler(taskExecutor());
-            taskRegistrar.addTriggerTask(() -> producers.forEach(p -> p.send()),
+            taskRegistrar.addTriggerTask(() -> producers.forEach(Producer::send),
                     triggerContext -> {
                         Calendar nextExecTime = new GregorianCalendar();
                         Date lastActualExecTime = triggerContext.lastActualExecutionTime();
