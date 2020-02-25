@@ -26,7 +26,7 @@ services:
     environment:
       JAVA_OPTS: "-Dspring.profiles.active=docker"
     volumes:
-      - /Users/markchristiansen/volumes/kafka-streams/data:/var/lib/kafka-streams
+      - /Users/markchristiansen/volumes/kafka-streams:/var/lib/kafka-streams
     networks:
       - kafka-network
 

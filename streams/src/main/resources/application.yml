@@ -65,3 +65,4 @@ spring:
     streams:
       bootstrap.servers: broker1:19092,broker2:19093,broker3:19094,broker4:19095,broker5:19096
       schema.registry.url: http://schema-registry:8081
+      state.dir: /var/lib/kafka-streams
