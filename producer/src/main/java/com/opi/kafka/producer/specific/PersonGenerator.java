@@ -1,8 +1,8 @@
 package com.opi.kafka.producer.specific;
 
 import com.github.javafaker.Faker;
-import com.opi.kafka.streams.avro.Person;
-import com.opi.kafka.streams.avro.PersonKey;
+import com.opi.kafka.avro.Person;
+import com.opi.kafka.avro.PersonKey;
 import org.apache.kafka.streams.KeyValue;
 
 public class PersonGenerator {

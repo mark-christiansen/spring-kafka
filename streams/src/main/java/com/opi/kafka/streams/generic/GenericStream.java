@@ -121,11 +121,10 @@ public class GenericStream {
 
     private void setup() {
 
-
         kafkaStreamsProperties.setProperty(StreamsConfig.TOPOLOGY_OPTIMIZATION, StreamsConfig.OPTIMIZE);
         final Topology topology = streamsBuilder().build(kafkaStreamsProperties);
         final TopologyDescription description = topology.describe();
-        log.info("Topology: " + description);
+        log.info("Topology: {}", description);
 
         // application.id is used as Kafka consumer group.id for coordination in kstreams, so you cannot set group.id explicitly
         kafkaStreamsProperties.put("application.id", format("spring-%s-stream", applicationId));

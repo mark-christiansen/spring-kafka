@@ -1,0 +1,36 @@
+version: '3.5'
+services:
+
+  kafka-consumer:
+    image: com.opi.kafka/consumer:latest
+    hostname: kafka-consumer
+    container_name: kafka-consumer
+    environment:
+      JAVA_OPTS: "-Dspring.profiles.active=docker"
+    networks:
+      - kafka-network
+
+  kafka-producer:
+    image: com.opi.kafka/producer:latest
+    hostname: kafka-producer
+    container_name: kafka-producer
+    environment:
+      JAVA_OPTS: "-Dspring.profiles.active=docker"
+    networks:
+      - kafka-network
+
+  kafka-streams:
+    image: com.opi.kafka/streams:latest
+    hostname: kafka-streams
+    container_name: kafka-streams
+    environment:
+      JAVA_OPTS: "-Dspring.profiles.active=docker"
+    volumes:
+      - /Users/markchristiansen/volumes/kafka-streams/data:/var/lib/kafka-streams
+    networks:
+      - kafka-network
+
+networks:
+  kafka-network:
+    external:
+      name: kafka_network

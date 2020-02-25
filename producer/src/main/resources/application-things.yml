@@ -1,31 +1,4 @@
 producers:
-  person:
-    enabled: true
-    type: generic
-    outputTopic: person
-    keySchema: schemas/person-key.avsc
-    valueSchema: schemas/person-value.avsc
-    batchSize: 100
-    primaryKeys: Person.id
-    maxPrimaryKeys: 100000
-  address:
-    enabled: true
-    type: generic
-    outputTopic: address
-    keySchema: schemas/address-key.avsc
-    valueSchema: schemas/address-value.avsc
-    batchSize: 100
-    generator: person
-    foreignKeys: Address.personId->Person.id
-  phone:
-    enabled: true
-    type: generic
-    outputTopic: phone
-    keySchema: schemas/phone-key.avsc
-    valueSchema: schemas/phone-value.avsc
-    batchSize: 100
-    generator: person
-    foreignKeys: Phone.personId->Person.id
   thing-0:
     enabled: false
     type: generic

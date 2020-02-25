@@ -1,0 +1,25 @@
+consumers:
+  phone-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: phone-encrypted
+  thing-0-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: thing-0-encrypted
+  thing-1-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: thing-1-encrypted
+  thing-2-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: thing-2-encrypted
+  thing-3-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: thing-3-encrypted
+  thing-4-encrypted:
+    enabled: false
+    type: generic
+    inputTopic: thing-4-encrypted

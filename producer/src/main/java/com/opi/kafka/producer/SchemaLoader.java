@@ -2,19 +2,23 @@ package com.opi.kafka.producer;
 
 import org.apache.avro.Schema;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class SchemaLoader {
-    public Schema getSchema(String schemaFilepath) throws URISyntaxException, IOException {
-        Path path = Paths.get(getClass().getClassLoader().getResource(schemaFilepath).toURI());
-        Stream<String> lines = Files.lines(path).map(str -> str.trim());
-        String data = lines.collect(Collectors.joining(""));
-        return new Schema.Parser().parse(data);
+    public Schema getSchema(String schemaFilepath) throws IOException {
+
+        StringBuilder sb = new StringBuilder();
+        try(InputStream in = getClass().getClassLoader().getResourceAsStream(schemaFilepath);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in))) {
+
+            String line = null;
+            while((line = br.readLine()) != null) {
+                sb.append(line.trim());
+            }
+        }
+        return new Schema.Parser().parse(sb.toString());
     }
 }

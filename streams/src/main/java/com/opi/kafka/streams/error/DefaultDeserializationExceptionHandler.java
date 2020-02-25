@@ -20,7 +20,7 @@ public class DefaultDeserializationExceptionHandler implements DeserializationEx
     public DeserializationHandlerResponse handle(ProcessorContext context, ConsumerRecord<byte[], byte[]> record, Exception exception) {
         log.error(format("Error occurred consuming record: key = \"%s\"", new String(record.key())), exception);
         if (deadLetterHandler != null) {
-            deadLetterHandler.handle(context.topic(), new KeyValue(record.key(), record.value()));
+            deadLetterHandler.handle(record.topic(), new KeyValue(record.key(), record.value()));
         }
         return DeserializationHandlerResponse.CONTINUE;
     }

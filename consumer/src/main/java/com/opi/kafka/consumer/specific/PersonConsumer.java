@@ -1,8 +1,8 @@
 package com.opi.kafka.consumer.specific;
 
 import com.opi.kafka.consumer.Consumer;
-import com.opi.kafka.streams.avro.Person;
-import com.opi.kafka.streams.avro.PersonKey;
+import com.opi.kafka.avro.Person;
+import com.opi.kafka.avro.PersonKey;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-kafka-producer
+    name: kafka-producer
   kafka:
     bootstrap-servers:
       - localhost:9092
@@ -14,11 +14,24 @@ spring:
     properties: # for KafkaAvroDeserializer
       schema.registry.url: http://localhost:8081
       specific.avro.reader: true
-    streams:
-      application-id: spring-kafka-stream
   profiles:
-    active: development
     include: producers
 
 schedule.send.rate.ms: 100
 task.pool.size: 100
+
+---
+
+spring.profiles: docker
+
+spring:
+  kafka:
+    bootstrap-servers:
+      - broker1:19092
+      - broker2:19093
+      - broker3:19094
+      - broker4:19095
+      - broker5:19096
+    properties:
+      # for KafkaAvroDeserializer
+      schema.registry.url: http://schema-registry:8081

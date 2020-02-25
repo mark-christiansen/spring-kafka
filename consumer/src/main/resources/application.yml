@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-kafka-consumer
+    name: kafka-consumer
   kafka:
     bootstrap-servers:
       - localhost:9092
@@ -11,8 +11,8 @@ spring:
     consumer:
       enable-auto-commit: false
       auto-offset-reset: earliest
-      client-id: spring-kafka-client-9
-      group-id: person-consumer-spring
+      client-id: kafka-consumer
+      group-id: kafka-consumer
       key-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
       concurrency: 10
@@ -26,13 +26,29 @@ spring:
     properties: # for KafkaAvroDeserializer
       schema.registry.url: http://localhost:8081
       specific.avro.reader: false
-    streams:
-      application-id: spring-kafka-stream
   profiles:
-    active: development
     include: consumers
 
 database:
   url: jdbc:mariadb://localhost/account?maxPoolSize=20
   username: account_user
   password: pump3rn1ck3l
+
+---
+
+spring.profiles: docker
+
+spring:
+  kafka:
+    bootstrap-servers:
+      - broker1:19092
+      - broker2:19093
+      - broker3:19094
+      - broker4:19095
+      - broker5:19096
+    properties:
+      # for KafkaAvroDeserializer
+      schema.registry.url: http://schema-registry:8081
+
+database:
+  url: jdbc:mariadb://mariadb/account?maxPoolSize=20
