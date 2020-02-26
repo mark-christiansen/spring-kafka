@@ -53,7 +53,7 @@ public class GenericAggregateStream extends GenericStream {
         final KTable<GenericRecord, GenericRecord> aggregate = groupedStream.aggregate(
                 () -> new GenericData.Record(valueSchemas[0]),
                 new AccountAggregator(inputTopics[0], deadLetterHandler),
-                Materialized.<GenericRecord, GenericRecord, KeyValueStore<Bytes, byte[]>>as("account-stream-store").withValueSerde(valueSerde));
+                Materialized.<GenericRecord, GenericRecord, KeyValueStore<Bytes, byte[]>>as("account-stream-store").withValueSerde(valueSerde).withCachingEnabled());
         aggregate.toStream().to(outputTopics[0]);
         return builder;
     }

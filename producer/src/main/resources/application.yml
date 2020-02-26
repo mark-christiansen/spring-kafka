@@ -17,8 +17,8 @@ spring:
   profiles:
     include: producers
 
-schedule.send.rate.ms: 100
-task.pool.size: 100
+schedule.send.rate.ms: 250
+task.pool.size: 20
 
 ---
 

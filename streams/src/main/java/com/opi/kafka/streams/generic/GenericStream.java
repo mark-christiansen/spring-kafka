@@ -122,6 +122,11 @@ public class GenericStream {
     private void setup() {
 
         kafkaStreamsProperties.setProperty(StreamsConfig.TOPOLOGY_OPTIMIZATION, StreamsConfig.OPTIMIZE);
+        // Enable record cache of size 10 MB.
+        kafkaStreamsProperties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 10 * 1024 * 1024L);
+        // Set commit interval to 1 second.
+        kafkaStreamsProperties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
+
         final Topology topology = streamsBuilder().build(kafkaStreamsProperties);
         final TopologyDescription description = topology.describe();
         log.info("Topology: {}", description);

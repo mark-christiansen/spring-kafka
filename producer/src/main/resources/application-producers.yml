@@ -7,7 +7,7 @@ producers:
     valueSchema: schemas/person-value.avsc
     batchSize: 100
     primaryKeys: Person.id
-    maxPrimaryKeys: 100000
+    maxPrimaryKeys: 2000000
   address:
     enabled: true
     type: generic

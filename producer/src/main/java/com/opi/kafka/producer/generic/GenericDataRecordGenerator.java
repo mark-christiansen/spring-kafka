@@ -149,13 +149,17 @@ public class GenericDataRecordGenerator {
             }
 
             if (foreignKeyFields.containsKey(fullFieldName)) {
-                if (primaryKeys.size() > maxPrimaryKeys/4) {
-                    // randomly pick a primary key from the list
-                    int index = faker.number().numberBetween(0, primaryKeys.size() - 1);
-                    record.put(f.name(), primaryKeys.get(index));
-                } else {
-                    primaryKeys.add(record.get(f.name()));
+
+                // wait until some primary keys are generated
+                while (primaryKeys.size() < 500) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignored) {}
                 }
+
+                // randomly pick a primary key from the list
+                int index = faker.number().numberBetween(0, primaryKeys.size() - 1);
+                record.put(f.name(), primaryKeys.get(index));
             }
 
         });
